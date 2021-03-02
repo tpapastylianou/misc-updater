@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Nano
+if   test "$( wget https://www.nano-editor.org/dist -O - 2> /dev/null | tail -n +10 | head -n +1 | cut -b 157-172)" == "2021-02-24 05:11"
+then :
+else echo "A new version of Nano has been released"
+fi
+
+# Anki
+if   test "$( wget https://github.com/ankitects/anki/releases -O - 2> /dev/null | tail -n  +717 | head -n +1 | cut -b 89-94 )" == "2.1.40"
+then :
+else echo "A new version of Anki has been released"
+fi
+
+# Octave
+if   test "$( wget https://www.gnu.org/software/octave/feed.xml -O - 2> /dev/null | tail -n  +13 | head -n +1 | cut -b 27-31 )" == "6.2.0"
+then :
+else echo "A new version of Octave has been released"
+fi
+
+# Julia
+if   test "$( wget https://julialang.org/downloads/ -O - 2> /dev/null | cut -b 5765-5770)" == "v1.5.3"
+then :
+else echo "A new version of Julia has been released"
+fi
+
+# Jabref
+if   test "$( wget https://www.fosshub.com/JabRef.html -O - 2> /dev/null | tail -n +1329 | head -n +1 | cut -b 71-81 )" == "JabRef-5.2-"
+then :
+else echo "A new version of Jabref has been released"
+fi
