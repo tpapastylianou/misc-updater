@@ -19,7 +19,7 @@ One of the main functions of a package manager is to check whether newer
 releases exist for the packages installed on the system, and notify the user
 when such updates exist. However, in the case of MISC packages, unless a package
 implements its own 'check for updates' mechanism, the user is not aware when
-updates are released, unless they periodically remember to check the respective
+updates are released, unless they periodically remember to manually check the respective
 websites of all MISC packages installed on the system.
 
 This script is a super-simple approach to solving that problem.
