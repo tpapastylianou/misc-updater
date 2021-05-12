@@ -37,6 +37,7 @@ This repository contains a simple example script which checks a selection of MIS
  - [Gnu Octave](https://www.gnu.org/software/octave/) (latest source release) --- the version typically offered by most linux distros tends to be horribly outdated, and generally compiling from source is much more versatile. The gui interface does actually notify you of new releases, but the cli (which I prefer to use) does not.
  - [Julia](https://julialang.org/) (latest binary tarball)
  - The [JabRef](https://www.jabref.org/) bibliography manager (latest .jar file)
+ - The [Zoom Video Conferencing] application (latest .deb file)
 
 Have a read, and adapt your script in a similar manner for your own packages. :)
 
@@ -49,6 +50,7 @@ I use this alongside my normal package manager's cli updater. E.g., I have `misc
 ## Notes
 
 - The script is extremely simple and should be simple enough to follow and modify without much need for detailed explanation. The basic idea is that one identifies a website for each project that can be easily parsed to identify the latest release, and then compare it to a locally defined value.
+  - In many cases, the best approach is to look for a fixed URL that always points to the 'latest release'. This is commonly provided in github-based releases, for instance.
 
 - This script is intended to act as an 'updater', not an 'upgrader'.
     I.e. it is not intended to 'upgrade' packages, it simply checks for 'updates' and notifies the user to act accordingly if any exist (i.e. much like a normal package-manager's `update` function).

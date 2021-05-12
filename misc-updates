@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # Nano
-if   test "$( wget https://www.nano-editor.org/dist -O - 2> /dev/null | tail -n +10 | head -n +1 | cut -b 157-172)" == "2021-02-24 05:11"
+if   test "$( wget https://www.nano-editor.org/dist -O - 2> /dev/null | tail -n +10 | head -n +1 | cut -b 157-172)" == "2021-04-29 06:58"
 then :
 else echo "A new version of Nano has been released"
 fi
 
 # Anki
-if   test "$( wget https://github.com/ankitects/anki/releases -O - 2> /dev/null | tail -n  +717 | head -n +1 | cut -b 89-94 )" == "2.1.40"
+wget https://github.com/ankitects/anki/releases/latest -O - 2> /dev/null | grep "2\.1\.44" > /dev/null
+if test $? -eq 0
 then :
 else echo "A new version of Anki has been released"
 fi
@@ -19,13 +20,21 @@ else echo "A new version of Octave has been released"
 fi
 
 # Julia
-if   test "$( wget https://julialang.org/downloads/ -O - 2> /dev/null | cut -b 5765-5770)" == "v1.5.3"
+wget https://github.com/JuliaLang/julia/releases/latest -O - 2> /dev/null | grep "v1\.6\.1" > /dev/null
+if   test $? -eq 0
 then :
 else echo "A new version of Julia has been released"
 fi
 
 # Jabref
-if   test "$( wget https://www.fosshub.com/JabRef.html -O - 2> /dev/null | tail -n +1329 | head -n +1 | cut -b 71-81 )" == "JabRef-5.2-"
+wget https://github.com/JabRef/jabref/releases/latest -O - 2> /dev/null | grep "5\.2 " > /dev/null
+if   test $? -eq 0
 then :
 else echo "A new version of Jabref has been released"
+fi
+
+# Zoom
+if   test "$( wget https://zoom.us/download -O - 2> /dev/null | head -n +723 | tail -n +723 | cut -b 61-65 )" == "5.6.4"
+then :
+else echo "A new version of Zoom has been released"
 fi
