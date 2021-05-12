@@ -37,7 +37,7 @@ This repository contains a simple example script which checks a selection of MIS
  - [Gnu Octave](https://www.gnu.org/software/octave/) (latest source release) --- the version typically offered by most linux distros tends to be horribly outdated, and generally compiling from source is much more versatile. The gui interface does actually notify you of new releases, but the cli (which I prefer to use) does not.
  - [Julia](https://julialang.org/) (latest binary tarball)
  - The [JabRef](https://www.jabref.org/) bibliography manager (latest .jar file)
- - The [Zoom Video Conferencing] application (latest .deb file)
+ - The [Zoom Video Conferencing](https://zoom.us) application (latest .deb file)
 
 Have a read, and adapt your script in a similar manner for your own packages. :)
 
