@@ -1,40 +1,19 @@
 #!/bin/bash
 
-# Nano
-if   test "$( wget https://www.nano-editor.org/dist -O - 2> /dev/null | tail -n +10 | head -n +1 | cut -b 157-172)" == "2021-04-29 06:58"
-then :
-else echo "A new version of Nano has been released"
-fi
+function check () (
+    PROGRAM="$1"
+    CURRENT="$2"
+    LATEST="$3"
+    if   test "$LATEST" == "$CURRENT"
+    then :
+    else echo "A new version of $PROGRAM has been released ($CURRENT -> $LATEST)"
+    fi
+)
 
-# Anki
-wget https://github.com/ankitects/anki/releases/latest -O - 2> /dev/null | grep "2\.1\.44" > /dev/null
-if test $? -eq 0
-then :
-else echo "A new version of Anki has been released"
-fi
-
-# Octave
-if   test "$( wget https://www.gnu.org/software/octave/feed.xml -O - 2> /dev/null | tail -n  +13 | head -n +1 | cut -b 27-31 )" == "6.2.0"
-then :
-else echo "A new version of Octave has been released"
-fi
-
-# Julia
-wget https://github.com/JuliaLang/julia/releases/latest -O - 2> /dev/null | grep "v1\.6\.1" > /dev/null
-if   test $? -eq 0
-then :
-else echo "A new version of Julia has been released"
-fi
-
-# Jabref
-wget https://github.com/JabRef/jabref/releases/latest -O - 2> /dev/null | grep "5\.2 " > /dev/null
-if   test $? -eq 0
-then :
-else echo "A new version of Jabref has been released"
-fi
-
-# Zoom
-if   test "$( wget https://zoom.us/download -O - 2> /dev/null | head -n +723 | tail -n +723 | cut -b 61-65 )" == "5.6.4"
-then :
-else echo "A new version of Zoom has been released"
-fi
+#check  PROGRAM     CURRENT     LATEST
+check   "Nano"      "6.2"       "$( wget https://www.nano-editor.org -O - 2> /dev/null | head -n +23 | tail -n +23 | cut -d'&' -f1 )"
+check   "Anki"      "2.1.50"    "$( wget https://github.com/ankitects/anki/releases/tag/2.1.50 -O - 2> /dev/null | egrep "<title>Release.*" -o | cut -d' ' -f2 )"
+check   "Octave"    "6.4.0"     "$( wget https://www.gnu.org/software/octave/feed.xml -O - 2> /dev/null | tail -n  +13 | head -n +1 | cut -b 27-31 )"
+check   "Julia"     "v1.6.1"    "$( wget https://github.com/JuliaLang/julia/releases/latest -O - 2> /dev/null | egrep "<title>Release.*" -o | cut -d' ' -f2 )"
+check   "Jabref"    "5.2"       "$( wget https://github.com/JabRef/jabref/releases/latest -O - 2> /dev/null | egrep "<title>Release.*" -o | cut -d' ' -f4 )"
+check   "Zoom"      "5.6.4"     "$( wget https://zoom.us/download -O - 2> /dev/null | egrep "var packageVersionX64" | egrep "Version .*" -o | cut -d' ' -f2 )"
