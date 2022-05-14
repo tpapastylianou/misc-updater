@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 function get_current_version () (
     case "$1" in
         ("Nano")   echo "$( nano --version | head -n +1 | egrep 'version .*$' -o | cut -d' ' -f2 )"   ;;
@@ -33,7 +34,6 @@ function check () (
 )
 
 
-#check  PROGRAM \ CURRENT \ LATEST
 check "Nano"
 check "Anki"
 check "Octave"
