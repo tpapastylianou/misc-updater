@@ -15,7 +15,7 @@ function get_current_version () (
 function get_latest_version () (
     case "$1" in
         ("Nano")   echo "$( wget https://www.nano-editor.org -O - 2> /dev/null | head -n +23 | tail -n +23 | cut -d'&' -f1 )"                             ;;
-        ("Anki")   echo "$( wget https://github.com/ankitects/anki/releases/tag/2.1.50 -O - 2> /dev/null | egrep "<title>Release.*" -o | cut -d' ' -f2 )" ;;
+        ("Anki")   echo "$( wget https://github.com/ankitects/anki/releases/latest -O - 2> /dev/null | egrep "<title>Release.*" -o | cut -d' ' -f2 )" ;;
         ("Octave") echo "$( wget https://www.gnu.org/software/octave/feed.xml -O - 2> /dev/null | tail -n  +13 | head -n +1 | cut -b 27-31 )"             ;;
         ("Julia")  echo "$( wget https://github.com/JuliaLang/julia/releases/latest -O - 2> /dev/null | egrep "<title>Release.*" -o | cut -d' ' -f2 )"    ;;
         ("Zoom")   echo "$( wget https://zoom.us/download -O - 2> /dev/null | egrep "var packageVersionX64" | egrep "Version .*" -o | cut -d' ' -f2 )"    ;;
