@@ -4,7 +4,7 @@
 function get_current_version () (
     case "$1" in
         ("Nano")   echo "$( nano --version | head -n +1 | egrep 'version .*$' -o | cut -d' ' -f2 )"   ;;
-        ("Anki")   echo "$( anki --version | cut -d' ' -f2 )"                                         ;;
+        ("Anki")   echo "$( anki --version | tail -n -1 | egrep 'Anki .*$' -o | cut -d' ' -f2 )"      ;;
         ("Octave") echo "$( octave --version | head -n +1 | egrep 'version .*$' -o | cut -d' ' -f2 )" ;;
         ("Julia")  echo "$( julia --version | head -n +1 | egrep 'version .*$' -o | cut -d' ' -f2 )"  ;;
         ("Zoom")   echo "$( dpkg -s zoom | grep Version | cut -d' ' -f2 | cut -d. -f1-3)"             ;;
