@@ -3,30 +3,36 @@
 
 function get_current_version () (
     case "$1" in
-        ("Nano")     echo "$( nano --version | head -n +1 | egrep 'version .*$' -o | cut -d' ' -f2 )"    ;;
-        ("Anki")     echo "$( anki --version | tail -n -1 | egrep 'Anki .*$' -o | cut -d' ' -f2 )"       ;;
-        ("Octave")   echo "$( octave --version | head -n +1 | egrep 'version .*$' -o | cut -d' ' -f2 )"  ;;
-        ("Julia")    echo "$( julia --version | head -n +1 | egrep '[[:digit:]]*\.'[[:digit:]]*\.'[[:digit:]]*\b' -o )" ;;
-        ("Zoom")     echo "$( dpkg -s zoom | grep Version | cut -d' ' -f2 | cut -d. -f1-3)"              ;;
-        ("Calcurse") echo "$( calcurse --version | egrep "[[:digit:]*\.[[:digit:]]*\.[[:digit:]]*\b" -o )" ;;
+        ("nano")     echo "$( nano --version | head -n +1 | egrep 'version .*$' -o | cut -d' ' -f2 )"    ;;
+        ("anki")     echo "$( anki --version | tail -n -1 | egrep 'Anki .*$' -o | cut -d' ' -f2 )"       ;;
+        ("octave")   echo "$( octave --version | head -n +1 | egrep 'version .*$' -o | cut -d' ' -f2 )"  ;;
+        ("julia")    echo "$( julia --version | head -n +1 | egrep '[[:digit:]]*\.'[[:digit:]]*\.'[[:digit:]]*\b' -o )" ;;
+        ("zoom")     echo "$( dpkg -s zoom | grep Version | cut -d' ' -f2 | cut -d. -f1-3)"              ;;
+        ("calcurse") echo "$( calcurse --version | egrep "[[:digit:]*\.[[:digit:]]*\.[[:digit:]]*\b" -o )" ;;
     esac
 )
 
 
 function get_latest_version () (
     case "$1" in
-        ("Nano")     echo "$( wget https://www.nano-editor.org -O - 2> /dev/null | head -n +23 | tail -n +23 | cut -d'&' -f1 )"                                   ;;
-        ("Anki")     echo "$( wget https://github.com/ankitects/anki/releases/latest -O - 2> /dev/null | egrep "<title>Release.*" -o | cut -d' ' -f2 )"           ;;
-        ("Octave")   echo "$( wget https://www.gnu.org/software/octave/feed.xml -O - 2> /dev/null | tail -n  +13 | head -n +1 | cut -b 27-31 )"                   ;;
-        ("Julia")    echo "$( wget https://julialang.org/downloads -O - 2> /dev/null | egrep "Current stable release: v(\S*)" -o | cut -d':' -f2 | cut -b 3- )"   ;;
-        ("Zoom")     echo "$( wget https://zoom.us/download?os=linux -O - 2> /dev/null | egrep "var packageVersionX64" | egrep "Version .*" -o | cut -d' ' -f2 )" ;;
-        ("Calcurse") echo "$( wget https://www.calcurse.org/downloads/ -O - 2> /dev/null | grep "The latest calcurse release is" | egrep "[[:digit:]*\.[[:digit:]]*\.[[:digit:]]*\b" -o )";;
+        ("nano")     echo "$( wget https://www.nano-editor.org -O - 2> /dev/null | head -n +23 | tail -n +23 | cut -d'&' -f1 )"                                   ;;
+        ("anki")     echo "$( wget https://github.com/ankitects/anki/releases/latest -O - 2> /dev/null | egrep "<title>Release.*" -o | cut -d' ' -f2 )"           ;;
+        ("octave")   echo "$( wget https://www.gnu.org/software/octave/feed.xml -O - 2> /dev/null | tail -n  +13 | head -n +1 | cut -b 27-31 )"                   ;;
+        ("julia")    echo "$( wget https://julialang.org/downloads -O - 2> /dev/null | egrep "Current stable release: v(\S*)" -o | cut -d':' -f2 | cut -b 3- )"   ;;
+        ("zoom")     echo "$( wget https://zoom.us/download?os=linux -O - 2> /dev/null | egrep "var packageVersionX64" | egrep "Version .*" -o | cut -d' ' -f2 )" ;;
+        ("calcurse") echo "$( wget https://www.calcurse.org/downloads/ -O - 2> /dev/null | grep "The latest calcurse release is" | egrep "[[:digit:]*\.[[:digit:]]*\.[[:digit:]]*\b" -o )";;
     esac
 )
 
+function itexists () (
+    case "$1" in
+        (*)   if test -n "$(which "$1")"; then return 0; else return 1; fi ;;
+    esac
+)
 
 function check () (
     PROGRAM="$1"
+    if itexists "$PROGRAM" ; then : ; else return ; fi   # If not installed, skip.
     CURRENT="$(get_current_version "$1")"
     LATEST="$(get_latest_version "$1")"
     if   test "$LATEST" == "$CURRENT"
@@ -36,9 +42,9 @@ function check () (
 )
 
 
-check "Nano"
-check "Anki"
-check "Octave"
-check "Julia"
-check "Zoom"
-check "Calcurse"
+check "nano"
+check "anki"
+check "octave"
+check "julia"
+check "zoom"
+check "calcurse"
