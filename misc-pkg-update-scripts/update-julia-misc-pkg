@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# User-defined variables
+DOWNLOAD_PREFIX="$HOME/.src"
+INSTALL_PREFIX="/opt"
+
+# Script variables
+ANSI_GREEN="\x1b[93m"
+ANSI_RESET="\x1b[39m"
+CURRENT_VERSION="$( julia --version | head -n +1 | egrep '[[:digit:]]*\.'[[:digit:]]*\.'[[:digit:]]*\b' -o )"
+LATEST_VERSION="$( wget https://julialang.org/downloads -O - 2> /dev/null | egrep "Current stable release: v(\S*)" -o | cut -d':' -f2 | cut -b 3- )"
+MAJOR_MINOR="$( echo "$LATEST_VERSION" | cut -d'.' -f1-2 )"
+TARFILE="julia-${LATEST_VERSION}-linux-x86_64.tar.gz"
+EXTRACTED_TARBALL="julia-${LATEST_VERSION}"
+
+# Download tarball into download directory
+echo
+echo -e "${ANSI_GREEN} *** Downloading julia ${LATEST_VERSION} tarball to ${DOWNLOAD_PREFIX}${ANSI_RESET}"
+mkdir "${DOWNLOAD_PREFIX}" -p
+wget "https://julialang-s3.julialang.org/bin/linux/x64/${MAJOR_MINOR}/julia-${LATEST_VERSION}-linux-x86_64.tar.gz" -P "$DOWNLOAD_PREFIX"
+
+# Extract
+echo
+echo -e "${ANSI_GREEN} *** Extracting tarball in ${DOWNLOAD_PREFIX}${ANSI_RESET}"
+cd "$DOWNLOAD_PREFIX"
+tar xvf "$TARFILE"
+
+# Move generated folder into installation directory
+echo
+echo -e "${ANSI_GREEN} *** Moving ${EXTRACTED_TARBALL} to ${INSTALL_PREFIX}${ANSI_RESET}"
+echo Performing sudo mv "${DOWNLOAD_PREFIX}/${EXTRACTED_TARBALL}" "${INSTALL_PREFIX}/${EXTRACTED_TARBALL}"
+echo 'Please type your password if asked'
+sudo mv "${DOWNLOAD_PREFIX}/${EXTRACTED_TARBALL}" "${INSTALL_PREFIX}/${EXTRACTED_TARBALL}"
+
+# Delete tarball and exit
+rm "${DOWNLOAD_PREFIX}/${TARFILE}"
+echo
+echo -e "${ANSI_GREEN} *** Installation complete. Don't forget to remove the old version and update your PATH variables.${ANSI_RESET}"
+echo
