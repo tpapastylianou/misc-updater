@@ -19,7 +19,7 @@ function get_latest_version () (
         ("anki")     echo "$( wget https://github.com/ankitects/anki/releases/latest -O - 2> /dev/null | egrep "<title>Release.*" -o | cut -d' ' -f2 )"           ;;
         ("octave")   echo "$( wget https://www.gnu.org/software/octave/feed.xml -O - 2> /dev/null | tail -n  +13 | head -n +1 | cut -b 27-31 )"                   ;;
         ("julia")    echo "$( wget https://julialang.org/downloads -O - 2> /dev/null | egrep "Current stable release: v(\S*)" -o | cut -d':' -f2 | cut -b 3- )"   ;;
-        ("zoom")     echo "$( wget https://zoom.us/download?os=linux -O - 2> /dev/null | egrep "var packageVersionX64" | egrep "Version .*" -o | cut -d' ' -f2 )" ;;
+        ("zoom")     echo "$( wget https://zoom.us/support/down4j -O - 2> /dev/null | egrep "var packageVersionX64" | egrep "Version .*" -o | cut -d' ' -f2 )" ;;
         ("calcurse") echo "$( wget https://www.calcurse.org/downloads/ -O - 2> /dev/null | grep "The latest calcurse release is" | egrep "[[:digit:]*\.[[:digit:]]*\.[[:digit:]]*\b" -o )";;
     esac
 )
