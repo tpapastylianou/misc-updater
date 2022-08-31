@@ -13,6 +13,16 @@ MAJOR_MINOR="$( echo "$LATEST_VERSION" | cut -d'.' -f1-2 )"
 TARFILE="julia-${LATEST_VERSION}-linux-x86_64.tar.gz"
 EXTRACTED_TARBALL="julia-${LATEST_VERSION}"
 
+# Confirm that an upgrade is actually necessary
+if   test "$CURRENT_VERSION" = "$LATEST_VERSION"
+then echo "Note: Your current installation is already up to date! (v${CURRENT_VERSION})"
+     read -n 1 -p "      Are you sure you want to continue? [y/n]"
+     if   test "$REPLY" = "y" || test "$REPLY" = "Y"
+     then :
+     else echo && echo "Aborting..." && exit 1
+     fi
+fi
+
 # Download tarball into download directory
 echo
 echo -e "${ANSI_GREEN} *** Downloading julia ${LATEST_VERSION} tarball to ${DOWNLOAD_PREFIX}${ANSI_RESET}"
