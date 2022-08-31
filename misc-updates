@@ -1,6 +1,13 @@
 #!/bin/bash
 
 
+####################
+### Helper functions
+####################
+
+# ------------------------------------------------------------------------------
+# Use a program-specific approach to obtain the current version for each program
+# ------------------------------------------------------------------------------
 function get_current_version () (
     case "$1" in
         ("nano")     echo "$( nano --version | head -n +1 | egrep 'version .*$' -o | cut -d' ' -f2 )"    ;;
@@ -13,6 +20,9 @@ function get_current_version () (
 )
 
 
+# ------------------------------------------------------------------------------
+# Use a program-specific approach to obtain the latest version for each program
+# ------------------------------------------------------------------------------
 function get_latest_version () (
     case "$1" in
         ("nano")     echo "$( wget https://www.nano-editor.org -O - 2> /dev/null | head -n +23 | tail -n +23 | cut -d'&' -f1 )"                                   ;;
@@ -24,12 +34,32 @@ function get_latest_version () (
     esac
 )
 
+
+# ------------------------------------------------------------------------------
+# Check if a program is discoverable on the path by the given name
+# ------------------------------------------------------------------------------
 function itexists () (
     case "$1" in
         (*)   if test -n "$(which "$1")"; then return 0; else return 1; fi ;;
     esac
 )
 
+
+# ------------------------------------------------------------------------------
+# Check if an updated version has been released
+# ------------------------------------------------------------------------------
+function confirm_internet_exists () {
+    if   ping -c 1 github.com > /dev/null 2>&1   # random url for checking connectivity; feel free to change.
+    then :
+    else echo "Error: You do not seem to be connected to the internet. Aborting...">&2
+         exit 1
+    fi
+}
+
+
+# ------------------------------------------------------------------------------
+# Check if an updated version has been released
+# ------------------------------------------------------------------------------
 function check () (
     PROGRAM="$1"
     if itexists "$PROGRAM" ; then : ; else return ; fi   # If not installed, skip.
@@ -42,9 +72,19 @@ function check () (
 )
 
 
-check "nano"
-check "anki"
-check "octave"
-check "julia"
-check "zoom"
-check "calcurse"
+
+
+#####################
+### Check for updates
+#####################
+
+confirm_internet_exists
+
+check "nano"     &
+check "anki"     &
+check "octave"   &
+check "julia"    &
+check "zoom"     &
+check "calcurse" &
+
+wait   # Wait for all the above checks to finish before exiting script
