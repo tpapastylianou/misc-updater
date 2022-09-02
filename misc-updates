@@ -1,5 +1,7 @@
 #!/bin/bash
 
+VERSION="0.1.0"
+if test "$1" = "--version"; then echo -e "MISC updates, version ${VERSION}\n(C) 2022 Tasos Papastylianou" && exit 0; fi
 
 ####################
 ### Helper functions
@@ -10,12 +12,13 @@
 # ------------------------------------------------------------------------------
 function get_current_version () (
     case "$1" in
-        ("nano")     echo "$( nano --version | head -n +1 | egrep 'version .*$' -o | cut -d' ' -f2 )"    ;;
-        ("anki")     echo "$( anki --version | tail -n -1 | egrep 'Anki .*$' -o | cut -d' ' -f2 )"       ;;
-        ("octave")   echo "$( octave --version | head -n +1 | egrep 'version .*$' -o | cut -d' ' -f2 )"  ;;
-        ("julia")    echo "$( julia --version | head -n +1 | egrep '[[:digit:]]*\.'[[:digit:]]*\.'[[:digit:]]*\b' -o )" ;;
-        ("zoom")     echo "$( dpkg -s zoom | grep Version | cut -d' ' -f2 | cut -d. -f1-3)"              ;;
-        ("calcurse") echo "$( calcurse --version | egrep "[[:digit:]*\.[[:digit:]]*\.[[:digit:]]*\b" -o )" ;;
+        ("misc-updates") echo "${VERSION}"                                                                                  ;;
+        ("nano")         echo "$( nano --version | head -n +1 | egrep 'version .*$' -o | cut -d' ' -f2 )"                   ;;
+        ("anki")         echo "$( anki --version | tail -n -1 | egrep 'Anki .*$' -o | cut -d' ' -f2 )"                      ;;
+        ("octave")       echo "$( octave --version | head -n +1 | egrep 'version .*$' -o | cut -d' ' -f2 )"                 ;;
+        ("julia")        echo "$( julia --version | head -n +1 | egrep '[[:digit:]]*\.'[[:digit:]]*\.'[[:digit:]]*\b' -o )" ;;
+        ("zoom")         echo "$( dpkg -s zoom | grep Version | cut -d' ' -f2 | cut -d. -f1-3)"                             ;;
+        ("calcurse")     echo "$( calcurse --version | egrep "[[:digit:]*\.[[:digit:]]*\.[[:digit:]]*\b" -o )"              ;;
     esac
 )
 
@@ -24,13 +27,15 @@ function get_current_version () (
 # Use a program-specific approach to obtain the latest version for each program
 # ------------------------------------------------------------------------------
 function get_latest_version () (
+    local PKG
     case "$1" in
-        ("nano")     echo "$( wget https://www.nano-editor.org -O - 2> /dev/null | head -n +23 | tail -n +23 | cut -d'&' -f1 )"                                   ;;
-        ("anki")     echo "$( wget https://github.com/ankitects/anki/releases/latest -O - 2> /dev/null | egrep "<title>Release.*" -o | cut -d' ' -f2 )"           ;;
-        ("octave")   echo "$( wget https://www.gnu.org/software/octave/feed.xml -O - 2> /dev/null | tail -n  +13 | head -n +1 | cut -b 27-31 )"                   ;;
-        ("julia")    echo "$( wget https://julialang.org/downloads -O - 2> /dev/null | egrep "Current stable release: v(\S*)" -o | cut -d':' -f2 | cut -b 3- )"   ;;
-        ("zoom")     echo "$( wget https://zoom.us/support/down4j -O - 2> /dev/null | egrep "var packageVersionX64" | egrep "Version .*" -o | cut -d' ' -f2 )" ;;
-        ("calcurse") echo "$( wget https://www.calcurse.org/downloads/ -O - 2> /dev/null | grep "The latest calcurse release is" | egrep "[[:digit:]*\.[[:digit:]]*\.[[:digit:]]*\b" -o )";;
+        ("misc-updates") PKG="$( wget https://raw.githubusercontent.com/tpapastylianou/misc-updater/main/misc-updates -O - 2> /dev/null | egrep "^VERSION" | cut -d'=' -f2 )" && PKG="${PKG#\"}" && PKG="${PKG%\"}" && echo "$PKG" ;;
+        ("nano")         echo "$( wget https://www.nano-editor.org -O - 2> /dev/null | head -n +23 | tail -n +23 | cut -d'&' -f1 )"                                                            ;;
+        ("anki")         echo "$( wget https://github.com/ankitects/anki/releases/latest -O - 2> /dev/null | egrep "<title>Release.*" -o | cut -d' ' -f2 )"                                    ;;
+        ("octave")       echo "$( wget https://www.gnu.org/software/octave/feed.xml -O - 2> /dev/null | tail -n  +13 | head -n +1 | cut -b 27-31 )"                                            ;;
+        ("julia")        echo "$( wget https://julialang.org/downloads -O - 2> /dev/null | egrep "Current stable release: v(\S*)" -o | cut -d':' -f2 | cut -b 3- )"                            ;;
+        ("zoom")         echo "$( wget https://zoom.us/support/down4j -O - 2> /dev/null | egrep "var packageVersionX64" | egrep "Version .*" -o | cut -d' ' -f2 )"                             ;;
+        ("calcurse")     echo "$( wget https://www.calcurse.org/downloads/ -O - 2> /dev/null | grep "The latest calcurse release is" | egrep "[[:digit:]*\.[[:digit:]]*\.[[:digit:]]*\b" -o )" ;;
     esac
 )
 
@@ -46,12 +51,19 @@ function itexists () (
 
 
 # ------------------------------------------------------------------------------
+# A useful, 'libstderred.so' compatible function for safely echoing error
+# messages to stderr (see: https://unix.stackexchange.com/a/164223)
+# ------------------------------------------------------------------------------
+function error () { awk "BEGIN { print \"$*\" > \"/dev/stderr\" }" ; }
+
+
+# ------------------------------------------------------------------------------
 # Check if an updated version has been released
 # ------------------------------------------------------------------------------
 function confirm_internet_exists () {
     if   ping -c 1 github.com > /dev/null 2>&1   # random url for checking connectivity; feel free to change.
     then :
-    else echo "Error: You do not seem to be connected to the internet. Aborting...">&2
+    else error "misc-updates: \\\"Error: you do not seem to be connected to the internet\\\". Aborting." >&2
          exit 1
     fi
 }
@@ -80,11 +92,12 @@ function check () (
 
 confirm_internet_exists
 
-check "nano"     &
-check "anki"     &
-check "octave"   &
-check "julia"    &
-check "zoom"     &
-check "calcurse" &
+check "misc-updates" &
+check "nano"         &
+check "anki"         &
+check "octave"       &
+check "julia"        &
+check "zoom"         &
+check "calcurse"     &
 
 wait   # Wait for all the above checks to finish before exiting script
